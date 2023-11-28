@@ -1,14 +1,12 @@
 package com.spring.jdbc.hoxtify.controller;
 
-import com.spring.jdbc.hoxtify.dao.DaoImpl;
+import com.spring.jdbc.hoxtify.exception.ResourceNotFoundException;
 import com.spring.jdbc.hoxtify.model.Artist;
+import com.spring.jdbc.hoxtify.service.ArtistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +15,12 @@ import java.util.List;
 @RequestMapping("/api")
 public class ArtistController {
     @Autowired
-    DaoImpl artistDao;
+    ArtistService artistService;
 
     @GetMapping("/artists")
     public ResponseEntity<List<Artist>> getAllTutorials(@RequestParam(required = false) String title) {
         try {
-            List<Artist> artists = new ArrayList<>(artistDao.getList());
+            List<Artist> artists = new ArrayList<>(artistService.getArtistList());
 
             if (artists.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -32,5 +30,17 @@ public class ArtistController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/artists/{id}")
+    public ResponseEntity<Artist> getArtistById(@PathVariable(value = "id") int id) {
+
+        Artist artist = artistService.getArtistById(id);
+
+        if (artist == null) {
+            throw new ResourceNotFoundException("Not found Artist with id = " + id);
+        }
+
+        return new ResponseEntity<>(artist, HttpStatus.OK);
     }
 }

@@ -2,28 +2,27 @@ package com.spring.jdbc.hoxtify.model;
 
 import java.util.ArrayList;
 
-public class Artist {
-    private int id;
+public class Genre {
+    private long id;
     private String name;
     private String image;
     private ArrayList<User> users = new ArrayList<>();
-    private ArrayList<Song> songs = new ArrayList<>();
-    private Genre genre;
 
-    public Artist() {
+    public Genre() {
     }
 
-    public Artist(int id, String name, String image) {
+    public Genre(long id, String name, String image, ArrayList<User> users) {
         this.id = id;
         this.name = name;
         this.image = image;
+        this.users = users;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -49,21 +48,5 @@ public class Artist {
 
     public void setUsers(ArrayList<User> users) {
         this.users = users;
-    }
-
-    public ArrayList<Song> getSongs() {
-        return songs;
-    }
-
-    public void setSongs(ArrayList<Song> songs) {
-        this.songs = songs;
-    }
-
-    public Genre getGenre() {
-        return genre;
-    }
-
-    public void setGenre(Genre genre) {
-        this.genre = genre;
     }
 }
