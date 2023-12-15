@@ -3,7 +3,6 @@ package com.spring.jdbc.hoxtify.controller;
 import com.spring.jdbc.hoxtify.exception.ResourceNotFoundException;
 import com.spring.jdbc.hoxtify.model.Artist;
 import com.spring.jdbc.hoxtify.service.ArtistService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +13,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ArtistController {
-    @Autowired
-    ArtistService artistService;
+    private final ArtistService artistService;
+    public ArtistController(ArtistService service) {
+        this.artistService = service;
+    }
 
     @GetMapping("/artists")
     public ResponseEntity<List<Artist>> getAllTutorials(@RequestParam(required = false) String title) {
@@ -42,5 +43,26 @@ public class ArtistController {
         }
 
         return new ResponseEntity<>(artist, HttpStatus.OK);
+    }
+
+    @PostMapping("/artists")
+    public ResponseEntity<String> createArtist(@RequestBody Artist artist) {
+        try {
+            artistService.saveArtist(artist);
+            return new ResponseEntity<>("Artist was created successfully.", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/artists/{id}")
+    public ResponseEntity<String> createArtist(@RequestBody Artist artist, @PathVariable(value = "id") int id) {
+        try {
+            artist.setId(id);
+            artistService.updateArtist(artist);
+            return new ResponseEntity<>("Artist was updated successfully.", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
