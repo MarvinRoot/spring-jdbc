@@ -29,20 +29,10 @@ public class ArtistDaoImpl {
 
     public List<Artist> getArtistList() {
         StringBuilder sql = new StringBuilder("Select artist.*, genre.name as genreName from artist" +
-                "       left join genre on genre.id = artist.genre_id ");
+                "       left join genre on genre.id = artist.genreId ");
         String string_sql = sql.toString();
-        List<Artist> artists = new ArrayList<>();
-        jdbcTemplate.query(string_sql, rs -> {
-            Artist artist = new Artist();
-            artist.setId(rs.getInt("id"));
-            artist.setName(rs.getString("name"));
-            Genre genre = new Genre();
-            genre.setName(rs.getString("genreName"));
-            genre.setId(rs.getLong("genre_id"));
-            artist.setGenre(genre);
-            artists.add(artist);
-        });
-        return artists;
+
+        return jdbcTemplate.query(string_sql, rowMapper);
     }
 
     public Artist getArtistById(int id) {
