@@ -17,31 +17,6 @@ public class SongDaoImpl {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Song> mapSongs(ResultSet rs) throws SQLException {
-        Map<Long, Song> songMap = new LinkedHashMap<>();
-
-        while (rs.next()) {
-            Long songId = rs.getLong("id");
-            Song song = songMap.get(songId);
-
-            if (song == null) {
-                song = new Song();
-                song.setId(songId);
-                song.setTitle(rs.getString("title"));
-                songMap.put(songId, song);
-            }
-
-            int artistId = rs.getInt("artist.id");
-            if (artistId != 0) {  // Handle potential null or 0 IDs indicating no artist
-                Artist artist = new Artist();
-                artist.setId(artistId);
-                artist.setName(rs.getString("name"));
-                song.getArtists().add(artist);
-            }
-        }
-        return new ArrayList<>(songMap.values());
-    }
-
     public List<Song> getSongList() {
         StringBuilder sql = new StringBuilder("Select song.*" +
                 " ,artist.name as artistName " +
